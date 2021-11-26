@@ -12,18 +12,20 @@ set(srcs
 		"FastLED/src/platforms.cpp"
 		"FastLED/src/power_mgt.cpp"
 		"FastLED/src/wiring.cpp"
-		# "hal/esp32-hal-misc.c"
-		# "hal/esp32-hal-gpio.c"
-# remove the following if you want I2S instead of RMT hardware, just put a pound in front
 		"FastLED/src/platforms/esp/32/clockless_rmt_esp32.cpp"
 		)
-
-# everything needs the ESP32 flag, not sure why this won't work
-# going to hack by adding the ESP32 define in the h file
-	#`target_compile_options(${COMPONENT_LIB} PRIVATE "-DESP32")
 
 idf_component_register(SRCS "${srcs}"
 			 INCLUDE_DIRS "." "FastLED/src")
 
-target_compile_definitions(${COMPONENT_LIB} PUBLIC ESP32)
+set(extra_defines 
+	ESP32
+	# Uncomment for hardware SPI
+	# FASTLED_ALL_PINS_HARDWARE_SPI
+	# Uncomment tu use I2S driver
+	# FASTLED_ESP32_I2S
+	# Uncomment for builtin (unoptimized) RMT driver
+	# FASTLED_RMT_BUILTIN_DRIVER
+)
+target_compile_definitions(${COMPONENT_LIB} PUBLIC ${extra_defines})
 
